@@ -1,0 +1,1381 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Webディレクター基礎マスター教科書 | 第1週</title>
+  <style>
+    :root {
+      --navy: #071a33;
+      --ink: #102033;
+      --muted: #66758a;
+      --line: #d9e1ec;
+      --panel: #f7f9fc;
+      --blue: #1769ff;
+      --cyan: #00b7d8;
+      --green: #1f9d63;
+      --red: #c53d4c;
+      --gold: #c58b11;
+      --white: #ffffff;
+      --shadow: 0 18px 50px rgba(7, 26, 51, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(7, 26, 51, 0.05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(7, 26, 51, 0.05) 1px, transparent 1px),
+        #eef3f9;
+      background-size: 44px 44px;
+      overflow: hidden;
+    }
+
+    html,
+    body {
+      max-width: 100%;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 76px minmax(0, 1fr);
+    }
+
+    .rail {
+      background: var(--navy);
+      color: var(--white);
+      padding: 18px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      z-index: 5;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04));
+      border-radius: 8px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .progress-dots {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.48);
+      background: transparent;
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .dot:hover,
+    .dot.active {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      transform: scale(1.25);
+    }
+
+    .counter {
+      writing-mode: vertical-rl;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 0.08em;
+    }
+
+    .stage {
+      min-width: 0;
+      min-height: 0;
+      position: relative;
+      padding: 28px;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 28px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(28px) scale(0.985);
+      transition: opacity 220ms ease, transform 220ms ease;
+      background: var(--white);
+      border: 1px solid rgba(7, 26, 51, 0.08);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0) scale(1);
+    }
+
+    .slide-header {
+      padding: 30px 38px 16px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 22px;
+    }
+
+    .kicker {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(33px, 4vw, 58px);
+      line-height: 1.06;
+      letter-spacing: 0;
+      color: var(--navy);
+      max-width: 980px;
+    }
+
+    h2 {
+      font-size: clamp(24px, 2.6vw, 36px);
+      line-height: 1.18;
+      letter-spacing: 0;
+      color: var(--navy);
+    }
+
+    h3 {
+      font-size: 17px;
+      line-height: 1.35;
+      color: var(--navy);
+    }
+
+    .lead {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: clamp(15px, 1.45vw, 19px);
+      line-height: 1.8;
+      max-width: 900px;
+    }
+
+    .tag {
+      min-width: 112px;
+      color: var(--navy);
+      background: #eef6ff;
+      border: 1px solid #cae1ff;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .slide-body {
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 28px 38px 96px;
+    }
+
+    .hero-body {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 34px;
+      align-items: center;
+    }
+
+    .executive-grid,
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card,
+    .work-card,
+    .quiz,
+    .diagram {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .card strong,
+    .mini strong {
+      color: var(--navy);
+    }
+
+    .meta-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .text {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.78;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .section-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .must-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini {
+      padding: 15px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 118px;
+    }
+
+    .mini .meta-label {
+      margin-bottom: 8px;
+    }
+
+    .work-card {
+      padding: 18px;
+      background: linear-gradient(180deg, #f9fbff 0%, #ffffff 100%);
+    }
+
+    .work-list {
+      margin: 12px 0 0;
+      padding-left: 20px;
+      color: var(--ink);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .quiz {
+      padding: 18px;
+      background: #fbfcfe;
+    }
+
+    .quiz p {
+      color: var(--navy);
+      line-height: 1.6;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 9px;
+    }
+
+    .choice {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 13px;
+      background: var(--white);
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+      line-height: 1.45;
+    }
+
+    .choice:hover {
+      border-color: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    .choice.correct {
+      border-color: rgba(31, 157, 99, 0.55);
+      background: #ecfbf3;
+    }
+
+    .choice.wrong {
+      border-color: rgba(197, 61, 76, 0.55);
+      background: #fff0f2;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      display: none;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.ok {
+      color: #0d6a40;
+      background: #ecfbf3;
+      border-color: rgba(31, 157, 99, 0.35);
+    }
+
+    .feedback.ng {
+      color: #8c2530;
+      background: #fff0f2;
+      border-color: rgba(197, 61, 76, 0.35);
+    }
+
+    .diagram {
+      padding: 18px;
+      background:
+        linear-gradient(135deg, rgba(23, 105, 255, 0.07), rgba(0, 183, 216, 0.03)),
+        var(--white);
+    }
+
+    .role-map {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .role {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--white);
+      min-height: 124px;
+      position: relative;
+    }
+
+    .role::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 0;
+      width: 44px;
+      height: 4px;
+      background: var(--cyan);
+      border-radius: 0 0 6px 6px;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .step {
+      position: relative;
+      padding: 16px 14px;
+      min-height: 126px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      width: 12px;
+      height: 2px;
+      background: var(--blue);
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .conversion {
+      display: grid;
+      grid-template-columns: 1fr 44px 1fr 44px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .box {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      min-height: 116px;
+    }
+
+    .arrow {
+      height: 2px;
+      background: var(--blue);
+      position: relative;
+    }
+
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -5px;
+      border-left: 9px solid var(--blue);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+    }
+
+    .pyramid {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .pyramid-row {
+      height: 54px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      font-weight: 800;
+      border-radius: 8px;
+      padding: 0 14px;
+      text-align: center;
+      line-height: 1.3;
+      box-shadow: 0 8px 18px rgba(7, 26, 51, 0.12);
+    }
+
+    .pyramid-row:nth-child(1) { width: 34%; background: var(--navy); }
+    .pyramid-row:nth-child(2) { width: 48%; background: #123a70; }
+    .pyramid-row:nth-child(3) { width: 64%; background: var(--blue); }
+    .pyramid-row:nth-child(4) { width: 80%; background: var(--cyan); }
+    .pyramid-row:nth-child(5) { width: 96%; background: #5a728f; }
+
+    .ia-map {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .ia-block {
+      min-height: 150px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .site-tree {
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .tree-node {
+      padding: 7px 9px;
+      border-radius: 6px;
+      background: #edf4ff;
+      border-left: 3px solid var(--blue);
+    }
+
+    .flow-lines {
+      display: grid;
+      gap: 11px;
+      margin-top: 13px;
+    }
+
+    .flow-line {
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .wire {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .wire-head,
+    .wire-row {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f4f7fb;
+    }
+
+    .wire-head {
+      height: 28px;
+    }
+
+    .wire-row {
+      height: 48px;
+    }
+
+    .case-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .matrix-cell {
+      padding: 16px;
+      min-height: 126px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .controls {
+      position: fixed;
+      right: 34px;
+      bottom: 28px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(7, 26, 51, 0.12);
+      box-shadow: 0 12px 30px rgba(7, 26, 51, 0.12);
+      border-radius: 999px;
+      padding: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--white);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+      background: #0d2b52;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .page-indicator {
+      min-width: 74px;
+      text-align: center;
+      font-weight: 800;
+      color: var(--navy);
+      font-size: 13px;
+    }
+
+    .accent-line {
+      width: 74px;
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      margin: 18px 0;
+    }
+
+    .mobile-break {
+      display: none;
+    }
+
+    .day-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+      min-height: 124px;
+    }
+
+    .day-number {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--navy);
+      color: var(--white);
+      font-weight: 900;
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .deck {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+        min-height: 100vh;
+        height: auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+
+      .rail {
+        position: sticky;
+        top: 0;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 14px;
+      }
+
+      .progress-dots {
+        flex-direction: row;
+        flex: 0 1 auto;
+        justify-content: flex-start;
+        overflow-x: auto;
+        max-width: 52vw;
+        gap: 8px;
+      }
+
+      .dot {
+        flex: 0 0 auto;
+      }
+
+      .counter {
+        writing-mode: initial;
+        font-size: 11px;
+      }
+
+      .stage {
+        width: 100%;
+        max-width: 100vw;
+        min-height: calc(100vh - 64px);
+        padding: 12px;
+        overflow-x: hidden;
+      }
+
+      .slide {
+        top: 12px;
+        left: 12px;
+        right: auto;
+        bottom: 12px;
+        width: calc(100vw - 24px);
+        min-height: calc(100vh - 88px);
+        max-width: calc(100vw - 24px);
+        overflow-x: hidden;
+      }
+
+      .slide-header {
+        grid-template-columns: 1fr;
+        padding: 22px 20px 14px;
+        min-width: 0;
+      }
+
+      .slide-body {
+        padding: 20px 20px 92px;
+      }
+
+      h1 {
+        font-size: 30px;
+        line-height: 1.16;
+        max-width: calc(100vw - 84px);
+        overflow-wrap: anywhere;
+        word-break: break-all;
+        line-break: anywhere;
+      }
+
+      h2 {
+        font-size: 24px;
+        max-width: calc(100vw - 84px);
+        overflow-wrap: anywhere;
+        word-break: break-all;
+        line-break: anywhere;
+      }
+
+      h3,
+      p,
+      .text {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-all;
+        line-break: anywhere;
+      }
+
+      .mobile-break {
+        display: block;
+      }
+
+      .hero-body > *,
+      .split > *,
+      .day-card > *,
+      .card,
+      .mini,
+      .diagram {
+        min-width: 0;
+      }
+
+      .tag {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .hero-body,
+      .split,
+      .case-board {
+        grid-template-columns: 1fr;
+      }
+
+      .executive-grid,
+      .day-grid,
+      .must-grid,
+      .role-map,
+      .ia-map,
+      .matrix {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .step:not(:last-child)::after {
+        display: none;
+      }
+
+      .conversion {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        width: 2px;
+        height: 26px;
+        justify-self: center;
+      }
+
+      .arrow::after {
+        right: -5px;
+        top: auto;
+        bottom: -1px;
+        border-top: 9px solid var(--blue);
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 0;
+      }
+
+      .controls {
+        right: 14px;
+        bottom: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="第1週 Webディレクター基礎マスター教科書">
+    <aside class="rail" aria-label="スライド進捗">
+      <div class="brand-mark">WD</div>
+      <div class="progress-dots" id="progressDots"></div>
+      <div class="counter" id="railCounter">01 / 08</div>
+    </aside>
+
+    <section class="stage">
+      <article class="slide active" aria-label="表紙">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Week 1 Master Textbook</div>
+            <h1>ディレクションの本質と<br class="mobile-break">企画・設計</h1>
+            <p class="lead">未経験者が最初の5日間で「何を判断し、何を整理し、どう合意形成するか」を掴むための実践型スライドです。</p>
+          </div>
+          <div class="tag">第1週 / Day 1-5</div>
+        </header>
+        <div class="slide-body hero-body">
+          <section>
+            <div class="accent-line"></div>
+            <div class="executive-grid">
+              <div class="card">
+                <span class="meta-label"><span class="icon">1</span>Direction</span>
+                <h3>Webディレクターは「翻訳者」</h3>
+                <p class="text">事業目的、ユーザー課題、制作現場の制約をつなぎ、成果に向かって意思決定を前に進めます。</p>
+              </div>
+              <div class="card">
+                <span class="meta-label"><span class="icon">2</span>Planning</span>
+                <h3>企画は「理由の設計」</h3>
+                <p class="text">何を作るかより先に、なぜ作るか、誰のどんな行動を変えるかを明確にします。</p>
+              </div>
+              <div class="card">
+                <span class="meta-label"><span class="icon">3</span>Structure</span>
+                <h3>設計は「迷わない地図」</h3>
+                <p class="text">情報、導線、画面の骨格を整理し、ユーザーと制作チーム双方の迷いを減らします。</p>
+              </div>
+              <div class="card">
+                <span class="meta-label"><span class="icon">4</span>Practice</span>
+                <h3>学習は「成果物」で固める</h3>
+                <p class="text">各Dayでワークとチェック問題を行い、学んだ概念を自分の言葉と資料に変換します。</p>
+              </div>
+            </div>
+          </section>
+          <section class="diagram">
+            <span class="meta-label">5-Day Roadmap</span>
+            <div class="day-grid">
+              <div class="day-card"><div class="day-number">D1</div><div><h3>役割</h3><p class="text">責任範囲と価値</p></div></div>
+              <div class="day-card"><div class="day-number">D2</div><div><h3>工程</h3><p class="text">制作プロセス</p></div></div>
+              <div class="day-card"><div class="day-number">D3</div><div><h3>課題</h3><p class="text">ヒアリング設計</p></div></div>
+              <div class="day-card"><div class="day-number">D4</div><div><h3>提案</h3><p class="text">企画書の構造</p></div></div>
+              <div class="day-card"><div class="day-number">D5</div><div><h3>設計</h3><p class="text">情報設計</p></div></div>
+              <div class="day-card"><div class="day-number">Ex</div><div><h3>総合演習</h3><p class="text">架空案件で統合</p></div></div>
+            </div>
+          </section>
+        </div>
+      </article>
+
+      <article class="slide" aria-label="Day 1">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Day 1</div>
+            <h2>Webディレクターの役割と仕事の全体像</h2>
+          </div>
+          <div class="tag">責任範囲を掴む</div>
+        </header>
+        <div class="slide-body split">
+          <section class="section-stack">
+            <div class="must-grid">
+              <div class="mini">
+                <span class="meta-label"><span class="icon">T</span>学習テーマ</span>
+                <p class="text">Webディレクターは、クライアント、ユーザー、制作チームの間で目的を翻訳し、成果に向けて判断を積み重ねる役割です。</p>
+              </div>
+              <div class="mini">
+                <span class="meta-label"><span class="icon">E</span>具体的な解説</span>
+                <p class="text">単なる進行役ではなく、目的定義、要件整理、品質判断、合意形成を担います。重要なのは「誰が何を決めるべきか」を曖昧にしないことです。</p>
+              </div>
+            </div>
+            <div class="diagram">
+              <span class="meta-label">Director Role Map</span>
+              <div class="role-map">
+                <div class="role">
+                  <h3>Business</h3>
+                  <p class="text">売上、問い合わせ、採用、認知など、事業上の目的を確認する。</p>
+                </div>
+                <div class="role">
+                  <h3>User</h3>
+                  <p class="text">誰が、どんな不安や目的を持ってサイトに来るかを整理する。</p>
+                </div>
+                <div class="role">
+                  <h3>Production</h3>
+                  <p class="text">デザイン、実装、原稿、確認の流れを現実的に組み立てる。</p>
+                </div>
+              </div>
+            </div>
+            <div class="work-card">
+              <span class="meta-label"><span class="icon">W</span>実践ワーク</span>
+              <h3>あなたがディレクターなら、最初に何を確認するか</h3>
+              <ul class="work-list">
+                <li>架空案件「町の美容室の予約サイト改善」を想定する。</li>
+                <li>事業目的、ユーザー、制作制約について各3問ずつ質問を作る。</li>
+                <li>その質問が「何の判断」に使われるかを横にメモする。</li>
+              </ul>
+            </div>
+          </section>
+          <aside class="quiz" data-quiz>
+            <span class="meta-label"><span class="icon">Q</span>理解度チェック</span>
+            <p>Webディレクターの最も重要な役割として、最も適切なものはどれですか。</p>
+            <div class="choices">
+              <button class="choice" data-correct="false">制作メンバーの作業をすべて代行すること</button>
+              <button class="choice" data-correct="true">目的・ユーザー・制作条件を整理し、判断と合意形成を進めること</button>
+              <button class="choice" data-correct="false">デザインの見た目だけを細かく指示すること</button>
+            </div>
+            <div class="feedback" data-feedback data-ok="正解です。ディレクターは全体の目的と判断基準を整え、関係者が迷わず進める状態を作ります。" data-ng="惜しいです。作業代行や見た目の指示だけではなく、目的・ユーザー・制作条件をつなぐ役割が中心です。"></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="slide" aria-label="Day 2">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Day 2</div>
+            <h2>Web制作プロセスの全体設計</h2>
+          </div>
+          <div class="tag">工程を設計する</div>
+        </header>
+        <div class="slide-body split">
+          <section class="section-stack">
+            <div class="must-grid">
+              <div class="mini">
+                <span class="meta-label"><span class="icon">T</span>学習テーマ</span>
+                <p class="text">Web制作は、企画、設計、制作、検証、公開、運用の流れで進みます。ディレクターは工程ごとの成果物と確認者を定義します。</p>
+              </div>
+              <div class="mini">
+                <span class="meta-label"><span class="icon">E</span>具体的な解説</span>
+                <p class="text">工程が曖昧だと、手戻りや確認漏れが増えます。「いつ、誰が、何を見て、何を承認するか」を先に置くことが進行管理の土台です。</p>
+              </div>
+            </div>
+            <div class="diagram">
+              <span class="meta-label">Production Flow</span>
+              <div class="timeline">
+                <div class="step"><div class="step-num">1</div><h3>企画</h3><p class="text">目的、KPI、対象者、訴求を決める。</p></div>
+                <div class="step"><div class="step-num">2</div><h3>設計</h3><p class="text">サイト構造、導線、画面骨子を作る。</p></div>
+                <div class="step"><div class="step-num">3</div><h3>制作</h3><p class="text">原稿、デザイン、実装を進める。</p></div>
+                <div class="step"><div class="step-num">4</div><h3>検証</h3><p class="text">表示、動作、内容、品質を確認する。</p></div>
+                <div class="step"><div class="step-num">5</div><h3>公開・運用</h3><p class="text">リリース後の数値と改善を追う。</p></div>
+              </div>
+            </div>
+            <div class="work-card">
+              <span class="meta-label"><span class="icon">W</span>実践ワーク</span>
+              <h3>制作工程表を作る</h3>
+              <ul class="work-list">
+                <li>5ページのコーポレートサイト制作を想定する。</li>
+                <li>各工程の成果物、担当者、承認者、完了条件を書き出す。</li>
+                <li>手戻りが起きそうなポイントを3つ予測する。</li>
+              </ul>
+            </div>
+          </section>
+          <aside class="quiz" data-quiz>
+            <span class="meta-label"><span class="icon">Q</span>理解度チェック</span>
+            <p>工程設計で最初に明確にすべきことはどれですか。</p>
+            <div class="choices">
+              <button class="choice" data-correct="true">工程ごとの成果物、確認者、完了条件</button>
+              <button class="choice" data-correct="false">公開後に使うSNS投稿の文言だけ</button>
+              <button class="choice" data-correct="false">デザインの色を最初に完全固定すること</button>
+            </div>
+            <div class="feedback" data-feedback data-ok="正解です。成果物、確認者、完了条件を置くと、関係者の認識ずれを早期に減らせます。" data-ng="惜しいです。色や投稿文も大切ですが、工程設計ではまず成果物・確認者・完了条件が軸になります。"></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="slide" aria-label="Day 3">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Day 3</div>
+            <h2>課題発見とヒアリング設計</h2>
+          </div>
+          <div class="tag">要望を課題へ変える</div>
+        </header>
+        <div class="slide-body split">
+          <section class="section-stack">
+            <div class="must-grid">
+              <div class="mini">
+                <span class="meta-label"><span class="icon">T</span>学習テーマ</span>
+                <p class="text">クライアントの「欲しい機能」や「好み」を、その背景にある事業課題やユーザー課題へ変換します。</p>
+              </div>
+              <div class="mini">
+                <span class="meta-label"><span class="icon">E</span>具体的な解説</span>
+                <p class="text">良いヒアリングは質問量ではなく、判断に使える情報を得ることです。現状、理想、差分、制約、優先順位の順で聞くと整理しやすくなります。</p>
+              </div>
+            </div>
+            <div class="diagram">
+              <span class="meta-label">From Request To Issue</span>
+              <div class="conversion">
+                <div class="box">
+                  <h3>要望</h3>
+                  <p class="text">「トップページをかっこよくしたい」</p>
+                </div>
+                <div class="arrow" aria-hidden="true"></div>
+                <div class="box">
+                  <h3>背景質問</h3>
+                  <p class="text">誰に何を伝えたいか。現状どこで離脱しているか。</p>
+                </div>
+                <div class="arrow" aria-hidden="true"></div>
+                <div class="box">
+                  <h3>課題</h3>
+                  <p class="text">初回訪問者が強みを理解できず、予約導線に進めていない。</p>
+                </div>
+              </div>
+            </div>
+            <div class="work-card">
+              <span class="meta-label"><span class="icon">W</span>実践ワーク</span>
+              <h3>ヒアリングシートを作る</h3>
+              <ul class="work-list">
+                <li>「問い合わせを増やしたい」という相談を受けた設定にする。</li>
+                <li>現状、理想、差分、制約、優先順位の5カテゴリで質問を2つずつ作る。</li>
+                <li>得られた回答を、課題仮説として1文にまとめる。</li>
+              </ul>
+            </div>
+          </section>
+          <aside class="quiz" data-quiz>
+            <span class="meta-label"><span class="icon">Q</span>理解度チェック</span>
+            <p>「動画を入れたい」と言われたとき、最初に返す質問として最も良いものはどれですか。</p>
+            <div class="choices">
+              <button class="choice" data-correct="false">どの動画編集ソフトを使いますか。</button>
+              <button class="choice" data-correct="true">動画で誰のどんな不安や疑問を解消したいですか。</button>
+              <button class="choice" data-correct="false">動画は必ずトップに大きく置きましょう。</button>
+            </div>
+            <div class="feedback" data-feedback data-ok="正解です。要望の背景にあるユーザー課題や達成したい行動を確認するのが先です。" data-ng="惜しいです。実装方法や配置の前に、動画を使う目的と解決したい課題を確認します。"></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="slide" aria-label="Day 4">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Day 4</div>
+            <h2>企画書・提案書の基本構造</h2>
+          </div>
+          <div class="tag">提案を通す骨格</div>
+        </header>
+        <div class="slide-body split">
+          <section class="section-stack">
+            <div class="must-grid">
+              <div class="mini">
+                <span class="meta-label"><span class="icon">T</span>学習テーマ</span>
+                <p class="text">企画書は「思いつき」ではなく、課題から施策までの論理を一本の線にした資料です。</p>
+              </div>
+              <div class="mini">
+                <span class="meta-label"><span class="icon">E</span>具体的な解説</span>
+                <p class="text">提案の説得力は、課題、目的、ターゲット、方針、施策、KPIがつながっているかで決まります。見た目より先に論理の順番を整えます。</p>
+              </div>
+            </div>
+            <div class="diagram">
+              <span class="meta-label">Proposal Pyramid</span>
+              <div class="pyramid">
+                <div class="pyramid-row">KPI / 成果指標</div>
+                <div class="pyramid-row">施策 / 何を作るか</div>
+                <div class="pyramid-row">方針 / どう勝つか</div>
+                <div class="pyramid-row">ターゲット / 誰の行動を変えるか</div>
+                <div class="pyramid-row">課題と目的 / なぜ必要か</div>
+              </div>
+            </div>
+            <div class="work-card">
+              <span class="meta-label"><span class="icon">W</span>実践ワーク</span>
+              <h3>1ページ提案書の骨子を作る</h3>
+              <ul class="work-list">
+                <li>架空案件「採用サイトの応募数を増やす」を題材にする。</li>
+                <li>課題、目的、ターゲット、方針、施策、KPIを各1文で書く。</li>
+                <li>各文のつながりが弱い箇所を赤入れする。</li>
+              </ul>
+            </div>
+          </section>
+          <aside class="quiz" data-quiz>
+            <span class="meta-label"><span class="icon">Q</span>理解度チェック</span>
+            <p>提案書の冒頭で最も先に示すべきものはどれですか。</p>
+            <div class="choices">
+              <button class="choice" data-correct="false">好みのデザインテイスト</button>
+              <button class="choice" data-correct="true">解決すべき課題と提案の目的</button>
+              <button class="choice" data-correct="false">使いたいアニメーションの種類</button>
+            </div>
+            <div class="feedback" data-feedback data-ok="正解です。課題と目的が明確だからこそ、施策やデザインの妥当性を判断できます。" data-ng="惜しいです。デザインや演出は、課題と目的に対する手段として後から評価します。"></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="slide" aria-label="Day 5">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Day 5</div>
+            <h2>サイト設計と情報設計の基礎</h2>
+          </div>
+          <div class="tag">迷わない構造を作る</div>
+        </header>
+        <div class="slide-body split">
+          <section class="section-stack">
+            <div class="must-grid">
+              <div class="mini">
+                <span class="meta-label"><span class="icon">T</span>学習テーマ</span>
+                <p class="text">サイトマップ、導線、ワイヤーフレームの違いを理解し、ユーザーが目的に到達しやすい構造を設計します。</p>
+              </div>
+              <div class="mini">
+                <span class="meta-label"><span class="icon">E</span>具体的な解説</span>
+                <p class="text">サイトマップは情報の棚、導線は移動の道、ワイヤーフレームは画面の骨格です。3つを分けて考えると設計の抜け漏れが減ります。</p>
+              </div>
+            </div>
+            <div class="diagram">
+              <span class="meta-label">Information Architecture</span>
+              <div class="ia-map">
+                <div class="ia-block">
+                  <h3>サイトマップ</h3>
+                  <div class="site-tree">
+                    <div class="tree-node">TOP</div>
+                    <div class="tree-node">サービス</div>
+                    <div class="tree-node">事例</div>
+                    <div class="tree-node">お問い合わせ</div>
+                  </div>
+                </div>
+                <div class="ia-block">
+                  <h3>導線</h3>
+                  <div class="flow-lines">
+                    <div class="flow-line" style="width: 94%"></div>
+                    <div class="flow-line" style="width: 74%"></div>
+                    <div class="flow-line" style="width: 86%"></div>
+                    <div class="flow-line" style="width: 58%"></div>
+                  </div>
+                </div>
+                <div class="ia-block">
+                  <h3>ワイヤーフレーム</h3>
+                  <div class="wire">
+                    <div class="wire-head"></div>
+                    <div class="wire-row"></div>
+                    <div class="wire-row"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="work-card">
+              <span class="meta-label"><span class="icon">W</span>実践ワーク</span>
+              <h3>予約サイトの設計メモを作る</h3>
+              <ul class="work-list">
+                <li>ユーザーの目的を「メニューを選び、空き時間を確認し、予約する」と定義する。</li>
+                <li>必要ページを5つ以内でサイトマップ化する。</li>
+                <li>TOPから予約完了までの導線を3ステップで描く。</li>
+              </ul>
+            </div>
+          </section>
+          <aside class="quiz" data-quiz>
+            <span class="meta-label"><span class="icon">Q</span>理解度チェック</span>
+            <p>ワイヤーフレームの主な目的として、最も適切なものはどれですか。</p>
+            <div class="choices">
+              <button class="choice" data-correct="false">最終的な色や写真を完全に決めること</button>
+              <button class="choice" data-correct="true">画面内の情報優先度、配置、導線を確認すること</button>
+              <button class="choice" data-correct="false">サーバーの契約プランを決めること</button>
+            </div>
+            <div class="feedback" data-feedback data-ok="正解です。ワイヤーフレームは見た目の完成形ではなく、情報と行動の骨格を確認する資料です。" data-ng="惜しいです。色や写真の前に、情報優先度と導線を確認するためのものです。"></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="slide" aria-label="週末総合演習">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Weekend Case</div>
+            <h2>総合演習：架空案件の企画・設計ワーク</h2>
+          </div>
+          <div class="tag">5日分を統合する</div>
+        </header>
+        <div class="slide-body">
+          <div class="case-board">
+            <section class="section-stack">
+              <div class="card">
+                <span class="meta-label"><span class="icon">C</span>案件設定</span>
+                <h3>地域密着のパーソナルジムが、無料体験予約を増やしたい</h3>
+                <p class="text">現状サイトは情報が古く、料金、トレーナー、体験の流れが分かりにくい。SNS経由の訪問はあるが、予約完了まで進む人が少ない。</p>
+              </div>
+              <div class="work-card">
+                <span class="meta-label"><span class="icon">W</span>実践ワーク</span>
+                <ul class="work-list">
+                  <li>ヒアリング質問を10個作る。</li>
+                  <li>課題仮説を1文でまとめる。</li>
+                  <li>提案書の骨子を「課題、目的、ターゲット、方針、施策、KPI」で作る。</li>
+                  <li>必要ページと予約完了までの導線を設計する。</li>
+                </ul>
+              </div>
+            </section>
+            <section class="diagram">
+              <span class="meta-label">Output Matrix</span>
+              <div class="matrix">
+                <div class="matrix-cell">
+                  <h3>1. 課題仮説</h3>
+                  <p class="text">ユーザーが料金と体験の不安を解消できず、予約判断に進めていない。</p>
+                </div>
+                <div class="matrix-cell">
+                  <h3>2. 成果指標</h3>
+                  <p class="text">無料体験予約率、予約フォーム到達率、料金ページ閲覧率。</p>
+                </div>
+                <div class="matrix-cell">
+                  <h3>3. 主要導線</h3>
+                  <p class="text">SNS流入 → 体験訴求 → 料金/流れ確認 → フォーム送信。</p>
+                </div>
+                <div class="matrix-cell">
+                  <h3>4. 必要ページ</h3>
+                  <p class="text">TOP、体験案内、料金、トレーナー、予約フォーム。</p>
+                </div>
+              </div>
+              <div class="quiz" data-quiz style="margin-top: 18px;">
+                <span class="meta-label"><span class="icon">Q</span>理解度チェック</span>
+                <p>この案件で最も優先して設計すべき導線はどれですか。</p>
+                <div class="choices">
+                  <button class="choice" data-correct="false">会社沿革を詳しく読ませる導線</button>
+                  <button class="choice" data-correct="true">体験予約への不安を解消し、予約フォームへ進む導線</button>
+                  <button class="choice" data-correct="false">採用情報だけを目立たせる導線</button>
+                </div>
+                <div class="feedback" data-feedback data-ok="正解です。目的が無料体験予約の増加なので、不安解消から予約フォームまでの流れを最優先します。" data-ng="惜しいです。今回の目的は無料体験予約の増加なので、予約判断に必要な情報とフォームへの導線が中心です。"></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" aria-label="まとめ">
+        <header class="slide-header">
+          <div>
+            <div class="kicker">Wrap Up</div>
+            <h2>第1週のまとめと第2週への接続</h2>
+          </div>
+          <div class="tag">次はUX・デザイン・技術</div>
+        </header>
+        <div class="slide-body hero-body">
+          <section class="section-stack">
+            <div class="card">
+              <span class="meta-label"><span class="icon">S</span>Summary</span>
+              <h3>第1週で身につけた判断軸</h3>
+              <p class="text">Webディレクターは、要望をそのまま作る人ではありません。目的を定義し、課題を発見し、提案と設計に落とし、関係者が判断できる状態を作る人です。</p>
+            </div>
+            <div class="must-grid">
+              <div class="mini"><h3>役割</h3><p class="text">事業、ユーザー、制作をつなぐ。</p></div>
+              <div class="mini"><h3>工程</h3><p class="text">成果物と承認条件を明確にする。</p></div>
+              <div class="mini"><h3>課題</h3><p class="text">要望の背景を問い、仮説化する。</p></div>
+              <div class="mini"><h3>設計</h3><p class="text">情報と導線を迷わない形にする。</p></div>
+            </div>
+          </section>
+          <section class="diagram">
+            <span class="meta-label">Next Week Preview</span>
+            <div class="timeline" style="grid-template-columns: 1fr;">
+              <div class="step"><div class="step-num">6</div><h3>UI/UX基礎</h3><p class="text">ユーザー視点で使いやすさを評価する。</p></div>
+              <div class="step"><div class="step-num">7</div><h3>コンテンツ設計</h3><p class="text">誰に何を伝えるかを設計する。</p></div>
+              <div class="step"><div class="step-num">8</div><h3>デザインディレクション</h3><p class="text">目的に対してデザインを判断する。</p></div>
+              <div class="step"><div class="step-num">9</div><h3>技術基礎</h3><p class="text">HTML/CSS/JavaScriptの役割を理解する。</p></div>
+              <div class="step"><div class="step-num">10</div><h3>CMS・ノーコード</h3><p class="text">実装手段の特徴を比較する。</p></div>
+            </div>
+          </section>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <nav class="controls" aria-label="スライド操作">
+    <button class="nav-btn" id="prevBtn" aria-label="前のスライド">‹</button>
+    <div class="page-indicator" id="pageIndicator">01 / 08</div>
+    <button class="nav-btn" id="nextBtn" aria-label="次のスライド">›</button>
+  </nav>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const dotsWrap = document.getElementById("progressDots");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const pageIndicator = document.getElementById("pageIndicator");
+    const railCounter = document.getElementById("railCounter");
+    let current = 0;
+
+    const formatPage = (index) => String(index + 1).padStart(2, "0");
+
+    slides.forEach((slide, index) => {
+      const dot = document.createElement("button");
+      dot.className = "dot";
+      dot.type = "button";
+      dot.setAttribute("aria-label", `${index + 1}枚目へ移動`);
+      dot.addEventListener("click", () => goTo(index));
+      dotsWrap.appendChild(dot);
+    });
+
+    const dots = Array.from(document.querySelectorAll(".dot"));
+
+    function goTo(index) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === current);
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === current);
+      });
+      const label = `${formatPage(current)} / ${String(slides.length).padStart(2, "0")}`;
+      pageIndicator.textContent = label;
+      railCounter.textContent = label;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+    }
+
+    prevBtn.addEventListener("click", () => goTo(current - 1));
+    nextBtn.addEventListener("click", () => goTo(current + 1));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") goTo(current + 1);
+      if (event.key === "ArrowLeft") goTo(current - 1);
+    });
+
+    document.querySelectorAll("[data-quiz]").forEach((quiz) => {
+      const choices = Array.from(quiz.querySelectorAll(".choice"));
+      const feedback = quiz.querySelector("[data-feedback]");
+
+      choices.forEach((choice) => {
+        choice.addEventListener("click", () => {
+          const isCorrect = choice.dataset.correct === "true";
+          choices.forEach((item) => {
+            item.classList.remove("correct", "wrong");
+            item.disabled = false;
+          });
+          choice.classList.add(isCorrect ? "correct" : "wrong");
+          feedback.textContent = isCorrect ? feedback.dataset.ok : feedback.dataset.ng;
+          feedback.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
+        });
+      });
+    });
+
+    goTo(0);
+  </script>
+</body>
+</html>
